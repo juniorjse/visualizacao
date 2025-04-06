@@ -324,7 +324,7 @@
             trigger: 'item',
             formatter: function (params) {
               return `<div style="font-weight: 800; margin-bottom: 5px;">${params.name}</div>
-                     <div>Preço por Litro: <span style="font-weight: 800;">R$ ${params.value?.toFixed(2)}</span></div>`;
+                     <div>Preço por Litro: <span style="font-weight: 800;">${trataNaN(params.value)}</span></div>`;
             },
             backgroundColor: 'rgba(255, 255, 255, 0.95)',
             borderColor: '#d2d2d7',
@@ -411,6 +411,10 @@
       };
     }
 
+    function trataNaN(price) {
+      return price ? `R$ ${price}` : "Dado indisponível"
+    }
+
     function carregarDados() {
       fetch('combustiveis.json')
         .then(response => response.json())
@@ -435,6 +439,7 @@
         });
 
         document.getElementById('combustivel').addEventListener('change', function() {
+          console.log(this.value)
             myChart.setOption(getOption(this.value), true);
         });
       });
