@@ -270,7 +270,23 @@
     let dadosCombustivel = {}
     const anos = ['julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
 
+    function getMinMaxValues(tipo) {
+      let min = Infinity;
+      let max = -Infinity;
+      
+      anos.forEach(ano => {
+        dadosCombustivel[tipo][ano].forEach(item => {
+          if (item.value < min) min = item.value;
+          if (item.value > max) max = item.value;
+        });
+      });
+      
+      return { min, max };
+    }
+
     function getOption(tipo) {
+      const { min, max } = getMinMaxValues(tipo);
+      
       return {
         baseOption: {
           timeline: {
@@ -329,6 +345,14 @@
           tooltip: {
             trigger: 'item',
             formatter: function (params) {
+              if (isNaN(params.value)) {
+                return `<div style="font-weight: 800; margin-bottom: 5px;">${params.name}</div>
+                       <div style="font-weight: 800;">Dado inválido</div>`;
+              }
+              if (tipo === 'GNV') {
+                return `<div style="font-weight: 800; margin-bottom: 5px;">${params.name}</div>
+                       <div>Preço por m³: <span style="font-weight: 800;">R$ ${params.value?.toFixed(2)}</span></div>`;
+              }
               return `<div style="font-weight: 800; margin-bottom: 5px;">${params.name}</div>
                      <div>Preço por Litro: <span style="font-weight: 800;">R$ ${params.value?.toFixed(2)}</span></div>`;
             },
@@ -344,8 +368,8 @@
           visualMap: {
             right: 50,
             bottom: 80,
-            min: 3,
-            max: 8,
+            min: min,
+            max: max,
             inRange: {
               color: [
                 '#1e40af', '#3b82f6', '#51cf66', '#ffd43b', '#ff0000'
@@ -372,10 +396,7 @@
             backgroundColor: 'rgba(255, 255, 255, 0.8)',
             padding: 10,
             formatter: function (value) {
-              if (value === 3 || value === 8) {
-                return value;
-              }
-              return value.toFixed(2);
+              return 'R$ ' + value.toFixed(2);
             },
             textGap: 10,
             orient: 'vertical',
