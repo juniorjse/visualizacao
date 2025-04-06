@@ -435,12 +435,11 @@
         myChart.setOption(getOption('GASOLINA'));
 
         window.addEventListener('resize', function() {
-            myChart.resize();
+          myChart.resize();
         });
 
         document.getElementById('combustivel').addEventListener('change', function() {
-          console.log(this.value)
-            myChart.setOption(getOption(this.value), true);
+          myChart.setOption(getOption(this.value), true);
         });
       });
     }
